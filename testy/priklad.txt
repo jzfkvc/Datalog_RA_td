@@ -1,0 +1,41 @@
+	/*
+        q(X):- r(a, Y).
+        q(X):- r(Y, X), q(Y).
+        */
+
+        String[][] rows_empty = { {"empty"} };
+        Relation empty_rel = new Relation(rows_empty);
+        Operator empty = empty_rel.operator();
+        String[][] rows = { {"a", "b"}, {"b", "c"}, {"c", "e"}, {"e", "f"} };
+        Relation rel = new Relation(rows);
+        Operator r = rel.operator();
+        Operator q1 = new Join(r, empty, (t1, t2) -> {
+                if (t1.get(0) != "a") return null;
+                Tuple t3 = new Tuple();
+                t3.add(t1.get(1));
+                return t3;
+            }
+        );
+        this.inner = new Union(q1, new Join(r, this, (t1, t2) -> {
+            if (t1.get(0) != t2.get(0)) return null;
+            Tuple t3 = new Tuple();
+            t3.add(t1.get(1));
+            return t3;
+        }));
+
+/*===============================*/
+
+	/*
+        q(X, Y):- r(X, Y), \+q(X, X).
+        */
+        
+        String[][] rows = { {"1", "2"}, {"3", "4"}, {"7", "7"}, {"5", "6"}, {"5", "5"} };
+        Relation rel = new Relation(rows);
+        this.r = rel.operator();
+        this.inner = new AntiJoin(r, this, (t1, t2) -> {
+                if (t1.get(0) == t2.get(0) && t2.get(0) == t2.get(1)) {
+                    return null;
+                }
+                return t1;
+            }
+        );

@@ -1,0 +1,21 @@
+/*R = {(0)}
+P(x) :- R(x) , \+Q(x)
+Q(x) :- R(x) , \+ P(x)
+
+
+P={(0)}, Q = Ф
+P = Ф, Q = {(0)}
+*/
+String[][] R1 = {{"0"}};
+Relation R = new Relation(r1);
+
+Operator r = R.operator();
+
+RecursiveOperator P = new AntiJoin(r, Q, (t1,t2)-> {
+                            if(t1.get(0) == t2.get(0)) return null;
+                            return t1;            
+                        });
+RecursiveOperator Q = new AntiJoin(r, P, (t1,t2)->{
+                            if(t1.get(0) == t2.get(0)) return null;
+                            return t1;
+                        });

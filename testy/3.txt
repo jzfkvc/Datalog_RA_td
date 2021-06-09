@@ -1,0 +1,13 @@
+/*
+S = {(1)}
+R(x) :- S(x) , \+ R(x)
+*/
+
+/*============================*/
+
+Relation s = new Relation({{"1"}});
+RelationOperator sOperator = s.operator();
+RecursiveOperator r = new AntiJoin(sOperator, this, (t1,t2)->{
+                                                            if(t1.get(0)==t2.get(0)) return null;
+                                                            return t1;    
+                                                        });
